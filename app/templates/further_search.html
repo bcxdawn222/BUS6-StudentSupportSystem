@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Advanced Search - Student Support Messages</h1>
+
+    <!-- Advanced filter form -->
+    <form method="GET" style="margin: 20px 0; padding: 15px; border: 1px solid #eee; border-radius: 4px; max-width: 600px;">
+        <!-- Priority filter -->
+        <div style="margin-bottom: 10px;">
+            <label style="font-weight: bold; margin-right: 10px;">Priority Level:</label>
+            <select name="priority" style="padding: 8px; margin-right: 15px;">
+                <option value="">All Priorities</option>
+               <option value="high" {% if status =='high' %}selected{% endif %}>High (≥8)</option>
+               <option value="medium" {% if status =='medium' %}selected{% endif %}>Medium (4-7)</option>
+               <option value="low" {% if status =='low' %}selected{% endif %}>Low (≤3)</option>
+            </select>
+
+            <!-- Sorting method filter -->
+            <label style="font-weight: bold; margin-right: 10px;">Sort By:</label>
+            <select name="sort" style="padding: 8px;">
+                <option value="">Default</option>
+                <option value="priority_high" {% if order =='priority_high' %}selected{% endif %}>Priority (High → Low)</option>
+                <option value="priority_low" {% if order =='priority_low' %}selected{% endif %}>Priority (Low → High)</option>
+                <option value="newest" {% if order =='newest' %}selected{% endif %}>Newest First</option>
+            </select>
+        </div>
+
+        <button type="submit" style="padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
+            Apply Filters
+        </button>
+    </form>
+
+    <!-- Filtered results table -->
+    <h3>Filtered Results</h3>
+    <table style="width: 100%; border-collapse: collapse; margin: 10px 0; max-width: 900px;">
+        <tr style="background-color: #f0f0f0;">
+            <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Course Name</th>
+            <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Message Title</th>
+            <th style="padding: 10px; border: 1px solid #ddd; text-align: center;">Priority</th>
+            <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Teacher Email</th>
+            <th style="padding: 10px; border: 1px solid #ddd; text-align: center;">Publish Date</th>
+        </tr>
+        {% if results %}
+            {% for msg in results %}
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;">{{ msg.course_name }}</td>
+                <td style="padding: 10px; border: 1px solid #ddd;">{{ msg.message_title }}</td>
+                <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">{{ msg.priority }}</td>
+                <td style="padding: 10px; border: 1px solid #ddd;">{{ msg.teacher_email }}</td>
+                <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">{{ msg.publish_date.strftime('%Y-%m-%d') }}</td>
+            </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="5" style="padding: 10px; border: 1px solid #ddd; text-align: center;">No messages match your filters</td>
+            </tr>
+        {% endif %}
+    </table>
+
+    <!-- Average priority of all filtered messages (out of 10) -->
+    <div style="margin-top: 20px; padding: 10px; background: #f8f9fa; border-radius: 4px; max-width: 300px;">
+        <strong>Average Priority of All Messages:</strong> {{ results1_final }}/10
+    </div>
+
+    <!-- links (Home/Basic Search) -->
+    <div style="margin-top: 20px;">
+        <a href="{{ url_for('index') }}">Home</a> |
+        <a href="{{ url_for('search_messages') }}">Basic Search</a>
+    </div>
+{% endblock %}
