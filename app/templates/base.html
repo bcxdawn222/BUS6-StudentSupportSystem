@@ -19,6 +19,7 @@
             <a href="{{ url_for('register') }}">Register</a>
         {% endif %}
     </div>
+    {% if current_user.is_authenticated %}
     <div>
         <a href="{{ url_for('index') }}">Home</a> |
         <a href="{{ url_for('listing_messages') }}">Messages</a> |
@@ -39,6 +40,7 @@
         <a href="{{ url_for('downloads') }}">下载</a> |
         <a href="{{ url_for('survey') }}">调查</a>
     </div>
+    {% endif %}
     <hr>
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
