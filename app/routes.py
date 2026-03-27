@@ -425,6 +425,72 @@ def book_appointment():
     return render_template('book_appointment.html', form=form, appointments=my_appointments)
 
 
+# Teacher: Review all submitted homeworks
+@app.route('/manage_homeworks')
+@login_required
+def manage_homeworks():
+    if current_user.role != 'teacher':
+        flash("Only teachers can access this page.", "danger")
+        return redirect(url_for('index'))
+    all_homeworks = (
+        Homework.query
+        .join(User)
+        .order_by(Homework.submitted_at.desc())
+        .all()
+    )
+    return render_template('manage_homeworks.html', homeworks=all_homeworks)
+
+
+# Teacher: Manage student appointments
+@app.route('/manage_appointments')
+@login_required
+def manage_appointments():
+    if current_user.role != 'teacher':
+        flash("Only teachers can access this page.", "danger")
+        return redirect(url_for('index'))
+    all_appointments = (
+        Appointment.query
+        .join(User)
+        .order_by(Appointment.created_at.desc())
+        .all()
+    )
+    return render_template('manage_appointments.html', appointments=all_appointments)
+
+
+# Teacher: Confirm an appointment
+@app.route('/confirm_appointment/<int:appt_id>', methods=['POST'])
+@login_required
+def confirm_appointment(appt_id):
+    if current_user.role != 'teacher':
+        flash("Only teachers can confirm appointments.", "danger")
+        return redirect(url_for('index'))
+    appt = db.session.get(Appointment, appt_id)
+    if not appt:
+        flash("Appointment not found.", "danger")
+        return redirect(url_for('manage_appointments'))
+    appt.status = 'confirmed'
+    db.session.commit()
+    flash(f"Appointment with {appt.student.username} confirmed.", "success")
+    return redirect(url_for('manage_appointments'))
+
+
+# Teacher: Cancel an appointment
+@app.route('/cancel_appointment/<int:appt_id>', methods=['POST'])
+@login_required
+def cancel_appointment(appt_id):
+    if current_user.role != 'teacher':
+        flash("Only teachers can cancel appointments.", "danger")
+        return redirect(url_for('index'))
+    appt = db.session.get(Appointment, appt_id)
+    if not appt:
+        flash("Appointment not found.", "danger")
+        return redirect(url_for('manage_appointments'))
+    appt.status = 'cancelled'
+    db.session.commit()
+    flash(f"Appointment with {appt.student.username} cancelled.", "success")
+    return redirect(url_for('manage_appointments'))
+
+
 # Delete message (teacher can only delete own messages)
 @app.route('/delete_message/<int:msg_id>', methods=['POST'])
 @login_required

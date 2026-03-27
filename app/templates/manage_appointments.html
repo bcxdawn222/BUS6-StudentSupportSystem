@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Manage Student Appointments</h1>
+
+    {% if appointments %}
+        <table style="width: 100%; border-collapse: collapse; max-width: 1100px;">
+            <tr style="background: #f8f9fa;">
+                <th style="border: 1px solid #ddd; padding: 8px;">Student</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">Teacher</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">Subject</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">Date</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">Time Slot</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">Notes</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">Status</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">Actions</th>
+            </tr>
+            {% for appt in appointments %}
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">{{ appt.student.username }}</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">{{ appt.teacher_name }}</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">{{ appt.subject }}</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">{{ appt.appointment_date.strftime('%Y-%m-%d') }}</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">{{ appt.time_slot }}</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">{{ appt.notes or "N/A" }}</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">
+                    {% if appt.status == 'confirmed' %}
+                        <span style="color: green; font-weight: bold;">Confirmed</span>
+                    {% elif appt.status == 'cancelled' %}
+                        <span style="color: red;">Cancelled</span>
+                    {% else %}
+                        <span style="color: orange; font-weight: bold;">Pending</span>
+                    {% endif %}
+                </td>
+                <td style="border: 1px solid #ddd; padding: 8px;">
+                    {% if appt.status == 'pending' %}
+                        <form action="{{ url_for('confirm_appointment', appt_id=appt.id) }}" method="POST" style="display:inline;">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <button type="submit" style="background: #28a745; color: white; border: none; padding: 4px 10px; border-radius: 3px; cursor: pointer;">Confirm</button>
+                        </form>
+                        <form action="{{ url_for('cancel_appointment', appt_id=appt.id) }}" method="POST" style="display:inline; margin-left: 5px;">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <button type="submit" style="background: #dc3545; color: white; border: none; padding: 4px 10px; border-radius: 3px; cursor: pointer;">Cancel</button>
+                        </form>
+                    {% else %}
+                        --
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>No appointment requests yet.</p>
+    {% endif %}
+
+    <div style="margin-top: 20px;">
+        <a href="{{ url_for('index') }}">Return to Home</a>
+    </div>
+{% endblock %}

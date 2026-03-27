@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Review Student Homeworks</h1>
+
+    {% if homeworks %}
+        <table style="width: 100%; border-collapse: collapse; max-width: 1000px;">
+            <tr style="background: #f8f9fa;">
+                <th style="border: 1px solid #ddd; padding: 8px;">Student</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">Course</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">Title</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">Description</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">File</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">Submitted At</th>
+            </tr>
+            {% for hw in homeworks %}
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">{{ hw.student.username }}</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">{{ hw.course_name }}</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">{{ hw.title }}</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">{{ hw.description or "N/A" }}</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">
+                    {% if hw.filename %}
+                        <a href="{{ url_for('download_file', filename=hw.filename) }}">{{ hw.filename }}</a>
+                    {% else %}
+                        No file
+                    {% endif %}
+                </td>
+                <td style="border: 1px solid #ddd; padding: 8px;">{{ hw.submitted_at.strftime('%Y-%m-%d %H:%M') }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>No homework submissions yet.</p>
+    {% endif %}
+
+    <div style="margin-top: 20px;">
+        <a href="{{ url_for('index') }}">Return to Home</a>
+    </div>
+{% endblock %}
