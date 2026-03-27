@@ -3,8 +3,8 @@ import uuid
 import logging
 from datetime import datetime
 
-from flask import render_template, redirect, url_for, flash, request, current_app, json
-from werkzeug.utils import secure_filename, send_from_directory
+from flask import render_template, redirect, url_for, flash, request, current_app, json, send_from_directory
+from werkzeug.utils import secure_filename
 
 from app import app
 from app import db
