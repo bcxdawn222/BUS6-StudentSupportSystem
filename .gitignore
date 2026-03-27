@@ -6,6 +6,10 @@ __pycache__/
 # Ignore virtual environments
 venv/
 .env/
+# Ignore database files
+app.db
+# Ignore uploaded files
+app/uploads/
 # Ignore editor and OS-specific files
 .vscode/
 .DS_Store

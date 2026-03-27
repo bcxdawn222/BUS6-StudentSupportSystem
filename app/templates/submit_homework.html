@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Submit Homework</h1>
+    <h1>提交作业</h1>
+
+    <form method="POST" enctype="multipart/form-data" novalidate style="max-width: 600px; margin-bottom: 30px;">
+        {{ form.hidden_tag() }}
+
+        <p style="margin: 10px 0;">
+            {{ form.course_name.label }}<br>
+            {{ form.course_name(size=64, style="width: 100%; padding: 8px; margin-top: 5px;") }}<br>
+            {% for error in form.course_name.errors %}
+                <span style="color: red; font-size: 14px;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+
+        <p style="margin: 10px 0;">
+            {{ form.title.label }}<br>
+            {{ form.title(size=64, style="width: 100%; padding: 8px; margin-top: 5px;") }}<br>
+            {% for error in form.title.errors %}
+                <span style="color: red; font-size: 14px;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+
+        <p style="margin: 10px 0;">
+            {{ form.description.label }}<br>
+            {{ form.description(rows=4, cols=60, style="width: 100%; padding: 8px; margin-top: 5px;") }}<br>
+            {% for error in form.description.errors %}
+                <span style="color: red; font-size: 14px;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+
+        <p style="margin: 10px 0;">
+            {{ form.file.label }}<br>
+            {{ form.file() }}<br>
+            {% for error in form.file.errors %}
+                <span style="color: red; font-size: 14px;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+
+        <p style="margin: 20px 0;">
+            {{ form.submit(style="padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;") }}
+        </p>
+    </form>
+
+    <hr>
+    <h2>My Submissions</h2>
+    {% if homeworks %}
+        <table style="width: 100%; border-collapse: collapse; max-width: 900px;">
+            <tr style="background: #f8f9fa;">
+                <th style="border: 1px solid #ddd; padding: 8px;">Course</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">Title</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">Description</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">File</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">Submitted At</th>
+            </tr>
+            {% for hw in homeworks %}
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">{{ hw.course_name }}</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">{{ hw.title }}</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">{{ hw.description or "N/A" }}</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">
+                    {% if hw.filename %}
+                        <a href="{{ url_for('download_file', filename=hw.filename) }}">{{ hw.filename }}</a>
+                    {% else %}
+                        No file
+                    {% endif %}
+                </td>
+                <td style="border: 1px solid #ddd; padding: 8px;">{{ hw.submitted_at.strftime('%Y-%m-%d %H:%M') }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>You have not submitted any homework yet.</p>
+    {% endif %}
+
+    <div style="margin-top: 20px;">
+        <a href="{{ url_for('index') }}">Return to Home</a>
+    </div>
+{% endblock %}

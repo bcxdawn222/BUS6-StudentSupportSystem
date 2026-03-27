@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}File Upload{% endblock %}
+
+{% block content %}
+<h1>File Upload</h1>
+
+<form method="POST" enctype="multipart/form-data" style="max-width: 600px; margin-bottom: 20px;">
+    {{ form.hidden_tag() }}
+
+    <p style="margin: 10px 0;">
+        {{ form.teacher_name.label }}<br>
+        {{ form.teacher_name(size=64, style="width: 100%; padding: 8px; margin-top: 5px;") }}
+    </p>
+
+    <p style="margin: 10px 0;">
+        {{ form.course_name.label }}<br>
+        {{ form.course_name(size=64, style="width: 100%; padding: 8px; margin-top: 5px;") }}
+    </p>
+
+    <p style="margin: 10px 0;">
+        {{ form.remark.label }}<br>
+        {{ form.remark(rows=3, style="width: 100%; padding: 8px; margin-top: 5px;") }}
+    </p>
+
+    <p style="margin: 10px 0;">
+        {{ form.file.label }}<br>
+        {{ form.file() }}
+    </p>
+
+    <p style="margin: 20px 0;">
+        {{ form.submit(style="padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;") }}
+    </p>
+</form>
+
+{% if filename and filename|length > 0 %}
+    <div style="padding: 10px; background: #d4edda; border-radius: 4px; margin-bottom: 15px; max-width: 600px;">
+        <p>File uploaded successfully: <strong>{{ filename }}</strong></p>
+        <a href="{{ url_for('download_file', filename=filename) }}">Download current file</a>
+    </div>
+{% endif %}
+
+<div style="margin-top: 20px;">
+    <a href="{{ url_for('downloads') }}">Download All Files</a> |
+    <a href="{{ url_for('index') }}">Return to Home Page</a>
+</div>
+
+{% endblock %}

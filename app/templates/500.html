@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div style="text-align: center; margin-top: 50px;">
+        <h1 style="font-size: 72px; color: #dc3545;">500</h1>
+        <h2>Internal Server Error</h2>
+        <p>Something went wrong on our end. Please try again later.</p>
+        <a href="{{ url_for('index') }}" style="padding: 8px 16px; background: #007bff; color: white; text-decoration: none; border-radius: 4px;">
+            Return to Home
+        </a>
+    </div>
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Book Appointment</h1>
+    <h1>预约</h1>
+
+    <form method="POST" novalidate style="max-width: 600px; margin-bottom: 30px;">
+        {{ form.hidden_tag() }}
+
+        <p style="margin: 10px 0;">
+            {{ form.teacher_name.label }}<br>
+            {{ form.teacher_name(size=64, style="width: 100%; padding: 8px; margin-top: 5px;") }}<br>
+            {% for error in form.teacher_name.errors %}
+                <span style="color: red; font-size: 14px;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+
+        <p style="margin: 10px 0;">
+            {{ form.subject.label }}<br>
+            {{ form.subject(size=64, style="width: 100%; padding: 8px; margin-top: 5px;") }}<br>
+            {% for error in form.subject.errors %}
+                <span style="color: red; font-size: 14px;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+
+        <p style="margin: 10px 0;">
+            {{ form.appointment_date.label }}<br>
+            {{ form.appointment_date(style="padding: 8px; margin-top: 5px;") }}<br>
+            {% for error in form.appointment_date.errors %}
+                <span style="color: red; font-size: 14px;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+
+        <p style="margin: 10px 0;">
+            {{ form.time_slot.label }}<br>
+            {{ form.time_slot(style="padding: 8px; margin-top: 5px;") }}<br>
+            {% for error in form.time_slot.errors %}
+                <span style="color: red; font-size: 14px;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+
+        <p style="margin: 10px 0;">
+            {{ form.notes.label }}<br>
+            {{ form.notes(rows=3, cols=60, style="width: 100%; padding: 8px; margin-top: 5px;") }}<br>
+            {% for error in form.notes.errors %}
+                <span style="color: red; font-size: 14px;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+
+        <p style="margin: 20px 0;">
+            {{ form.submit(style="padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;") }}
+        </p>
+    </form>
+
+    <hr>
+    <h2>My Appointments</h2>
+    {% if appointments %}
+        <table style="width: 100%; border-collapse: collapse; max-width: 900px;">
+            <tr style="background: #f8f9fa;">
+                <th style="border: 1px solid #ddd; padding: 8px;">Teacher</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">Subject</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">Date</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">Time Slot</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">Notes</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">Status</th>
+            </tr>
+            {% for appt in appointments %}
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">{{ appt.teacher_name }}</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">{{ appt.subject }}</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">{{ appt.appointment_date.strftime('%Y-%m-%d') }}</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">{{ appt.time_slot }}</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">{{ appt.notes or "N/A" }}</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">
+                    {% if appt.status == 'confirmed' %}
+                        <span style="color: green; font-weight: bold;">Confirmed</span>
+                    {% elif appt.status == 'cancelled' %}
+                        <span style="color: red;">Cancelled</span>
+                    {% else %}
+                        <span style="color: orange;">Pending</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>You have not booked any appointments yet.</p>
+    {% endif %}
+
+    <div style="margin-top: 20px;">
+        <a href="{{ url_for('index') }}">Return to Home</a>
+    </div>
+{% endblock %}
